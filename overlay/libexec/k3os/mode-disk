@@ -146,6 +146,19 @@ takeover()
     fi
 }
 
+setup_multipath()
+{
+  modprobe dm-multipath
+  udevd -d
+  udevadm settle
+  udevadm trigger --type=devices --action=add
+  udevadm settle
+  multipath -v3
+  udevadm settle
+  udevadm control --exit
+}
+
+setup_multipath
 setup_mounts
 setup_k3os
 setup_kernel_squashfs
