@@ -126,6 +126,11 @@ do_mount()
 
     mkdir -p ${DISTRO}
     mount -o ro ${ISO_DEVICE} ${DISTRO} || mount -o ro ${ISO_DEVICE%?} ${DISTRO}
+    if [ ! -d "${DISTRO}/k3os" ]; then
+        umount ${DISTRO}
+        echo "#### There is no k3os data on the ISO device (${ISO_DEVICE})"
+        return 1
+    fi
 }
 
 do_copy()
@@ -223,7 +228,11 @@ EOF
 
 get_iso()
 {
-    ISO_DEVICE=$(blkid -L K3OS || true)
+
+    if [ -z "${ISO_DEVICE}" ]; then
+        ISO_DEVICE=$(blkid -L K3OS || true)
+    fi
+
     if [ -z "${ISO_DEVICE}" ]; then
         for i in $(lsblk -o NAME,TYPE -n | grep -w disk | awk '{print $1}'); do
             mkdir -p ${DISTRO}
