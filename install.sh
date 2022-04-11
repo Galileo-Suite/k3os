@@ -126,11 +126,6 @@ do_mount()
 
     mkdir -p ${DISTRO}
     mount -o ro ${ISO_DEVICE} ${DISTRO} || mount -o ro ${ISO_DEVICE%?} ${DISTRO}
-    if [ ! -d "${DISTRO}/k3os" ]; then
-        umount ${DISTRO}
-        echo "#### There is no k3os data on the ISO device (${ISO_DEVICE})"
-        return 1
-    fi
 }
 
 do_copy()
